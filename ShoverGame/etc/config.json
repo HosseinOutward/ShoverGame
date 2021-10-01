@@ -1,0 +1,6 @@
+{
+  "SECRET_KEY": "vu@+j8ckmr^*v!pbq24@jn&9x%nzt5m0-_^+rojktfjzk&*@^2",
+  "DB_NAME": "Test_DB",
+  "DB_USER": "postgres",
+  "DB_PASSWORD": "password"
+}

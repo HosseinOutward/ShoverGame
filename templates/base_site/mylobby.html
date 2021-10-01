@@ -1,0 +1,272 @@
+{% extends '../Base_HTML.html' %} {% block contents %}
+
+<div style="margin: 40px"></div>
+
+<!--================First Upcoming Games Area =================-->
+<section class="upcoming_games_area">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="main_title">
+					<h2>Lobby</h2>
+					<h1>Lobby</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!--================End Upcoming Games Area =================-->
+
+<section id="app"></section>
+
+<div style="margin: 40px"></div>
+
+<!--================ Start Newsletter Area ================-->
+<section class="newsletter_area">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-sm-12">
+				<div class="newsletter_inner">
+					<h1>Subscribe Our Newsletter</h1>
+					<p>We won’t send any kind of spam</p>
+				</div>
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-12">
+				<aside class="newsletter_widget">
+					<div id="mc_embed_signup">
+						<form
+							target="_blank"
+							action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
+							method="get"
+							class="subscribe_form relative"
+						>
+							<div class="input-group d-flex flex-row">
+								<input
+									name="EMAIL"
+									placeholder="Enter email address"
+									onfocus="this.placeholder = ''"
+									onblur="this.placeholder = 'Your email address'"
+									required=""
+									type="email"
+								/>
+								<button class="btn primary_btn">Subscribe</button>
+							</div>
+						</form>
+					</div>
+				</aside>
+			</div>
+		</div>
+	</div>
+</section>
+<!--================ End Newsletter Area ================-->
+
+<script>
+		const container = document.getElementById("app");
+
+		function getCookie(name) {
+			var cookieValue = null;
+			if (document.cookie && document.cookie !== "") {
+				var cookies = document.cookie.split(";");
+				for (var i = 0; i < cookies.length; i++) {
+					var cookie = cookies[i].trim();
+					// Does this cookie string begin with the name we want?
+					if (cookie.substring(0, name.length + 1) === name + "=") {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+			return cookieValue;
+		}
+
+		const renderLoading = () => {
+			container.innerHTML = `
+	        <style>
+	        .lds-grid {
+	  display: inline-block;
+	  position: relative;
+	  width: 80px;
+	  height: 80px;
+	}
+	.lds-grid div {
+	  position: absolute;
+	  width: 16px;
+	  height: 16px;
+	  border-radius: 50%;
+	  background: black;
+	  animation: lds-grid 1.2s linear infinite;
+	}
+	.lds-grid div:nth-child(1) {
+	  top: 8px;
+	  left: 8px;
+	  animation-delay: 0s;
+	}
+	.lds-grid div:nth-child(2) {
+	  top: 8px;
+	  left: 32px;
+	  animation-delay: -0.4s;
+	}
+	.lds-grid div:nth-child(3) {
+	  top: 8px;
+	  left: 56px;
+	  animation-delay: -0.8s;
+	}
+	.lds-grid div:nth-child(4) {
+	  top: 32px;
+	  left: 8px;
+	  animation-delay: -0.4s;
+	}
+	.lds-grid div:nth-child(5) {
+	  top: 32px;
+	  left: 32px;
+	  animation-delay: -0.8s;
+	}
+	.lds-grid div:nth-child(6) {
+	  top: 32px;
+	  left: 56px;
+	  animation-delay: -1.2s;
+	}
+	.lds-grid div:nth-child(7) {
+	  top: 56px;
+	  left: 8px;
+	  animation-delay: -0.8s;
+	}
+	.lds-grid div:nth-child(8) {
+	  top: 56px;
+	  left: 32px;
+	  animation-delay: -1.2s;
+	}
+	.lds-grid div:nth-child(9) {
+	  top: 56px;
+	  left: 56px;
+	  animation-delay: -1.6s;
+	}
+	@keyframes lds-grid {
+	  0%, 100% {
+	    opacity: 1;
+	  }
+	  50% {
+	    opacity: 0.5;
+	  }
+	}</style>
+	<div style="display: flex; justify-content: center;">
+	<div class="lds-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+	</div>
+	        `;
+		};
+
+		const renderError = () => {
+			container.innerHTML = `<a class="btn btn-block" href="/createGame/">Create Game</a>
+        <h5 style="text-align: center;">There was a problem loading the lobby! or you're not joined in a game.</h5>`;
+		};
+
+		const renderGames = (json) => {
+			const arr = [];
+			json.map((game) => {
+				arr.push(`<div style="width: 80%; border-radius: 10px; box-shadow: 0 0 5px gray; min-height: 100px; padding: 10px;">
+	                <div style="display: flex; align-items:center;">
+	                <img src="/media/${game?.map_image}" style="max-width: 400px; border-radius: 10px;" />
+	                <div style="margin: 20px;"></div>
+	                <div>
+	                    <h5>Player: ${game.player1}</h5>
+	                    <h5>Oppnent: ${game.player2}</h5>
+	                    <div style="margin:5px;"></div>
+	                    <div style="background: royalblue; width: fit-content; border-radius: 5px; padding: 10px 50px; color: white; cursor: pointer;" onclick="joinLobby(${game?.pk})">
+	                        Join
+	                    </div>
+	                </div>
+	                </div>
+	                </div>`);
+			});
+			container.innerHTML = `<a class="btn btn-block" href="/createGame/">Create Game</a>
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+	${arr.join()}
+	            </div>`;
+		};
+
+		const renderCurrentGame = (game) => {
+			container.innerHTML = `
+	        <div style="display: flex; justify-content: center; align-items: center;">
+	            <div style="box-shadow: 0 0 10px gray; border-raduis: 10px; box-shadow: 0 0 5px gray; min-height: 200px; width: 80%; border-radius: 10px; padding: 10px; display: flex; align-items: center;">
+	                <img src="${game?.map_layout?.map_image}" style="max-width: 400px; border-radius: 10px;"/>
+	                <div style="margin: 10px;" />
+	                <a style="background: darkgreen; width: fit-content; border-radius: 5px; padding: 10px 50px; color: white; cursor: pointer;" href="/coop/">
+	                     Open Game
+	                </a>
+	                <div style="background: royalblue; width: fit-content; border-radius: 5px; padding: 10px 50px; color: white; cursor: pointer;" onclick="leaveLobby()">
+	                     Leave
+	                </div>
+	            </div>
+	        </div>`;
+		};
+
+		const getGames = () => {
+			renderLoading();
+			fetch("/_api/lobbies/")
+				.then((response) => {
+					if (!response.ok) return renderError();
+					response
+						.json()
+						.then((json) => {
+							renderGames(json);
+						})
+						.catch(renderError);
+				})
+				.catch(renderError);
+		};
+
+		const getCurrentGame = () => {
+			renderLoading();
+			fetch("/_api/GameLobby/")
+				.then((response) => {
+					if (!response.ok) return getGames();
+					response
+						.json()
+						.then((json) => {
+							if (json && json.id) {
+								renderCurrentGame(json);
+							} else {
+								getGames();
+							}
+						})
+						.catch(getGames);
+				})
+				.catch(renderError);
+		};
+
+		const joinLobby = (pk) => {
+			renderLoading();
+			fetch("/_api/JoinLobby/" + pk, {
+				method: "PUT",
+				credentials: "include",
+				headers: {
+					"X-CSRFToken": getCookie("csrftoken"),
+				},
+			})
+				.then((response) => {
+					if (!response.ok) return renderError();
+					getCurrentGame();
+				})
+				.catch(renderError);
+		};
+
+		const leaveLobby = () => {
+			renderLoading();
+			fetch("/_api/LeaveLobby/", {
+				method: "DELETE",
+				credentials: "include",
+				headers: {
+					"X-CSRFToken": getCookie("csrftoken"),
+				},
+			})
+				.then((response) => {
+					if (!response.ok) return renderError();
+					getCurrentGame();
+				})
+				.catch(renderError);
+		};
+
+		getCurrentGame();
+</script>
+
+{% endblock %}

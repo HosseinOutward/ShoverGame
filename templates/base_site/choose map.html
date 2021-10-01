@@ -1,0 +1,104 @@
+{% extends '../Base_HTML.html' %} {% block contents %}
+
+    <div style="margin: 40px"></div>
+
+    <!--================First Upcoming Games Area =================-->
+    <section class="upcoming_games_area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="main_title content ">
+                        <h2>Maps</h2>
+                        <h1>Maps</h1>
+                        {% for map in maps %}
+                            <span>
+                                <img style='height: 30%; width: 30%; object-fit: contain' src={{ map.premade_map_image.url }}>
+                                </img>
+                                <button onclick="createGame({{ map.pk }})"> create this map</button>
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================End Upcoming Games Area =================-->
+
+    <section id="app"></section>
+
+    <div style="margin: 40px"></div>
+
+    <!--================ Start Newsletter Area ================-->
+    <section class="newsletter_area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="newsletter_inner">
+                        <h1>Subscribe Our Newsletter</h1>
+                        <p>We won’t send any kind of spam</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <aside class="newsletter_widget">
+                        <div id="mc_embed_signup">
+                            <form
+                                    target="_blank"
+                                    action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
+                                    method="get"
+                                    class="subscribe_form relative"
+                            >
+                                <div class="input-group d-flex flex-row">
+                                    <input
+                                            name="EMAIL"
+                                            placeholder="Enter email address"
+                                            onfocus="this.placeholder = ''"
+                                            onblur="this.placeholder = 'Your email address'"
+                                            required=""
+                                            type="email"
+                                    />
+                                    <button class="btn primary_btn">Subscribe</button>
+                                </div>
+                            </form>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================ End Newsletter Area ================-->
+
+    <script>
+        const container = document.getElementById("app");
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                var cookies = document.cookie.split(";");
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === name + "=") {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const createGame = (pk) => {
+            fetch("/_api/lobbies/", {
+                method: "POST",
+                credentials: "include",
+                redirect: 'follow',
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({"map_choice": pk})
+            })
+            window.location.href = "/lobby/"
+        };
+    </script>
+
+{% endblock %}
