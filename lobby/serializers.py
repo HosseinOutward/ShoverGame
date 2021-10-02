@@ -129,19 +129,22 @@ class GameStatusSerializers(serializers.ModelSerializer):
     def get_players_info(self, obj):
         from PIL import ImageColor
         player, other_player = get_current_player(obj, self.context['request'].user)
+        is_host = (player == obj.player_1_lobby)
 
         player = {
             'score_Plobby': player.score_Plobby,
             'fortune_Plobby': player.fortune_Plobby,
             'color': ImageColor.getcolor(
-                player.player_Plobby.userprofile.color_profile, "RGB")
+                player.player_Plobby.userprofile.color_profile, "RGB"),
+            'color_map_code': int(is_host)
         }
         if other_player is not None:
             other_player = {
                 'score_Plobby': other_player.score_Plobby,
                 'fortune_Plobby': other_player.fortune_Plobby,
                 'color': ImageColor.getcolor(
-                    other_player.player_Plobby.userprofile.color_profile, "RGB")
+                    other_player.player_Plobby.userprofile.color_profile, "RGB"),
+                'color_map_code': int(is_host)
             }
         else: other_player = ""
 

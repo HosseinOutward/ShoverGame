@@ -4019,12 +4019,14 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.AJAX.Exps.LastData,
 		C3.Plugins.Json.Exps.Get,
 		C3.Plugins.System.Cnds.Compare,
+		C3.Plugins.System.Acts.Wait,
+		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.System.Exps.int,
 		C3.Plugins.Sprite.Acts.SetDefaultColor,
 		C3.Plugins.System.Exps.rgbex,
 		C3.Plugins.System.Acts.AddVar,
-		C3.Plugins.System.Cnds.CompareVar,
 		C3.Plugins.Sprite.Acts.SetBoolInstanceVar,
+		C3.Plugins.System.Cnds.CompareVar,
 		C3.Plugins.Touch.Cnds.OnTapGestureObject,
 		C3.Plugins.System.Cnds.CompareBoolVar,
 		C3.Plugins.System.Acts.ResetGlobals,
@@ -4071,6 +4073,7 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Text.Acts.SetFontSize,
 		C3.Plugins.Text.Acts.SetFontColor,
 		C3.Plugins.System.Exps.rgbex255,
+		C3.Plugins.AJAX.Acts.Post,
 		C3.Plugins.System.Cnds.Every,
 		C3.Plugins.System.Cnds.IsSuspended,
 		C3.Plugins.TiledBg.Exps.ZElevation,
@@ -4083,8 +4086,6 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Text.Exps.Width,
 		C3.Plugins.Text.Exps.Height,
 		C3.Plugins.Text.Acts.TypewriterText,
-		C3.Plugins.AJAX.Acts.Post,
-		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.Sprite.Cnds.IsOverlapping,
 		C3.Plugins.System.Exps.min
 	];
@@ -4392,9 +4393,11 @@ self.C3_ExpressionFuncs = [
 		},
 		p => {
 			const n0 = p._GetNode(0);
-			return () => n0.ExpObject("players_info");
+			return () => n0.ExpObject("players_info.other_player");
 		},
 		() => "",
+		() => "WAITING FOR PLAYER",
+		() => 666,
 		p => {
 			const n0 = p._GetNode(0);
 			const n1 = p._GetNode(1);
@@ -4437,6 +4440,10 @@ self.C3_ExpressionFuncs = [
 			const n2 = p._GetNode(2);
 			const n3 = p._GetNode(3);
 			return () => f0(n1.ExpObject("players_info.other_player.color.0"), n2.ExpObject("players_info.other_player.color.1"), n3.ExpObject("players_info.other_player.color.2"));
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => n0.ExpObject("players_info.player.color_map_code");
 		},
 		p => {
 			const v0 = p._GetNode(0).GetVar();
@@ -4490,7 +4497,18 @@ self.C3_ExpressionFuncs = [
 		p => {
 			const n0 = p._GetNode(0);
 			const v1 = p._GetNode(1).GetVar();
-			return () => n0.ExpObject(v1.GetValue(), 2);
+			const v2 = p._GetNode(2).GetVar();
+			const v3 = p._GetNode(3).GetVar();
+			const v4 = p._GetNode(4).GetVar();
+			return () => n0.ExpObject(((v1.GetValue() * v2.GetValue()) + ((1 - v3.GetValue()) * v4.GetValue())), 2);
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			const v1 = p._GetNode(1).GetVar();
+			const v2 = p._GetNode(2).GetVar();
+			const v3 = p._GetNode(3).GetVar();
+			const v4 = p._GetNode(4).GetVar();
+			return () => n0.ExpObject(((v1.GetValue() * (1 - v2.GetValue())) + (v3.GetValue() * v4.GetValue())), 2);
 		},
 		() => 40,
 		() => "shovingSFX",
@@ -4518,9 +4536,11 @@ self.C3_ExpressionFuncs = [
 		() => 0.2,
 		() => 0.4,
 		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			const n1 = p._GetNode(1);
-			return () => (f0((1 + (5.5 * n1.ExpInstVar()))) * 40);
+			const n0 = p._GetNode(0);
+			const v1 = p._GetNode(1).GetVar();
+			const n2 = p._GetNode(2);
+			const v3 = p._GetNode(3).GetVar();
+			return () => (((1 - n0.ExpInstVar()) * (1 - v1.GetValue())) + (n2.ExpInstVar() * v3.GetValue()));
 		},
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
@@ -4554,6 +4574,17 @@ self.C3_ExpressionFuncs = [
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => f0(8, 60, 18);
 		},
+		() => "post_action",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			const v1 = p._GetNode(1).GetVar();
+			const v2 = p._GetNode(2).GetVar();
+			const v3 = p._GetNode(3).GetVar();
+			const v4 = p._GetNode(4).GetVar();
+			const v5 = p._GetNode(5).GetVar();
+			return () => ((((((((((("last_move_i=" + (v0.GetValue()).toString()) + "&last_move_j=") + (v1.GetValue()).toString()) + "&last_move_act=") + (v2.GetValue()).toString()) + "&score_my=") + (v3.GetValue()).toString()) + "&fortune_my=") + (v4.GetValue()).toString()) + "&epoch_num_my=") + (v5.GetValue()).toString());
+		},
+		() => "PATCH",
 		() => 0.5,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
@@ -4605,7 +4636,7 @@ self.C3_ExpressionFuncs = [
 			return () => f0(66, 43, 32);
 		},
 		() => "get_sync",
-		() => -1023,
+		() => -717706215031807,
 		p => {
 			const n0 = p._GetNode(0);
 			return () => n0.ExpObject("epoch_num");
@@ -4623,7 +4654,6 @@ self.C3_ExpressionFuncs = [
 			const v0 = p._GetNode(0).GetVar();
 			return () => ("epoch_num_my=" + (v0.GetValue()).toString());
 		},
-		() => "PATCH",
 		() => -19226889215,
 		p => {
 			const n0 = p._GetNode(0);
@@ -4656,16 +4686,6 @@ self.C3_ExpressionFuncs = [
 			return () => n0.ExpObject("last_move_act");
 		},
 		() => -100,
-		() => "post_action",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			const v1 = p._GetNode(1).GetVar();
-			const v2 = p._GetNode(2).GetVar();
-			const v3 = p._GetNode(3).GetVar();
-			const v4 = p._GetNode(4).GetVar();
-			const v5 = p._GetNode(5).GetVar();
-			return () => ((((((((((("last_move_i=" + (v0.GetValue()).toString()) + "&last_move_j=") + (v1.GetValue()).toString()) + "&last_move_act=") + (v2.GetValue()).toString()) + "&score_my=") + (v3.GetValue()).toString()) + "&fortune_my=") + (v4.GetValue()).toString()) + "&epoch_num_my=") + (v5.GetValue()).toString());
-		},
 		() => -337550069728255
 ];
 

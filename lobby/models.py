@@ -43,7 +43,7 @@ class Lobby(models.Model):
     last_move_i = models.IntegerField(null=True)
     last_move_j = models.IntegerField(null=True)
     last_move_act = models.IntegerField(choices=(
-        (1, 'up'), (2, 'right'), (3, 'down'), (4, 'left'),), null=True)
+        (0, 'NULL'), (1, 'up'), (2, 'right'), (3, 'down'), (4, 'left'),), null=True)
 
     def delete(self, using=None, keep_parents=False):
         try:
